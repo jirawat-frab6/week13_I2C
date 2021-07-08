@@ -54,6 +54,7 @@ uint8_t IOExpdrExampleReadFlag = 0;
 uint8_t eepromDataReadBack[4];
 uint8_t IOExpdrDataReadBack;
 uint8_t IOExpdrDataWrite = 0b01010101;
+uint8_t input_buffer[2] = {0};
 
 /* USER CODE END PV */
 
@@ -114,12 +115,40 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  HAL_I2C_Mem_Read_IT(&hi2c1, EEPROM_ADDR, 0x2c, I2C_MEMADD_SIZE_16BIT,&IOExpdrDataWrite, 1);
+  HAL_Delay(100);
+  HAL_I2C_Mem_Write_IT(&hi2c1, IOEXPD_ADDR, 0x15, I2C_MEMADD_SIZE_8BIT,&IOExpdrDataWrite, 1);
+
+
+
 	while (1) {
+
+		/*
 		EEPROMWriteExample();
 		EEPROMReadExample(eepromDataReadBack, 4);
 
 		IOExpenderReadPinA(&IOExpdrDataReadBack);
 		IOExpenderWritePinB(IOExpdrDataWrite);
+		*/
+
+		input_buffer[0] = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+		if(input_buffer[0] == 0 && input_buffer[1] == 1){
+
+			//read button and write to EEPROM
+			HAL_I2C_Mem_Read_IT(&hi2c1, IOEXPD_ADDR, 0x12, I2C_MEMADD_SIZE_8BIT,&IOExpdrDataReadBack, 1);
+			HAL_Delay(100);
+			HAL_I2C_Mem_Write_IT(&hi2c1, EEPROM_ADDR, 0x2C, I2C_MEMADD_SIZE_16BIT,&IOExpdrDataReadBack, 1);
+			HAL_Delay(100);
+
+			//read EEPROM and write data to led
+			HAL_I2C_Mem_Read_IT(&hi2c1, EEPROM_ADDR, 0x2c, I2C_MEMADD_SIZE_16BIT,&IOExpdrDataWrite, 1);
+			HAL_Delay(100);
+			HAL_I2C_Mem_Write_IT(&hi2c1, IOEXPD_ADDR, 0x15, I2C_MEMADD_SIZE_8BIT,&IOExpdrDataWrite, 1);
+
+
+		}
+		input_buffer[1] = input_buffer[0];
 
     /* USER CODE END WHILE */
 
@@ -279,7 +308,6 @@ void EEPROMWriteExample() {
 		static uint8_t data[4] = { 0xff, 0x00, 0x55, 0xaa };
 		HAL_I2C_Mem_Write_IT(&hi2c1, EEPROM_ADDR, 0x2C, I2C_MEMADD_SIZE_16BIT,
 				data, 4);
-
 
 
 		eepromExampleWriteFlag = 0;
