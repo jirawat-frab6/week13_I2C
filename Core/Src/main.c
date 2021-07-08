@@ -116,7 +116,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  HAL_I2C_Mem_Read_IT(&hi2c1, EEPROM_ADDR, 0x2c, I2C_MEMADD_SIZE_16BIT,&IOExpdrDataWrite, 1);
+  HAL_I2C_Mem_Read_IT(&hi2c1, EEPROM_ADDR, 0x08, I2C_MEMADD_SIZE_16BIT,&IOExpdrDataWrite, 1);
   HAL_Delay(100);
   HAL_I2C_Mem_Write_IT(&hi2c1, IOEXPD_ADDR, 0x15, I2C_MEMADD_SIZE_8BIT,&IOExpdrDataWrite, 1);
 
@@ -138,11 +138,11 @@ int main(void)
 			//read button and write to EEPROM
 			HAL_I2C_Mem_Read_IT(&hi2c1, IOEXPD_ADDR, 0x12, I2C_MEMADD_SIZE_8BIT,&IOExpdrDataReadBack, 1);
 			HAL_Delay(100);
-			HAL_I2C_Mem_Write_IT(&hi2c1, EEPROM_ADDR, 0x2C, I2C_MEMADD_SIZE_16BIT,&IOExpdrDataReadBack, 1);
+			HAL_I2C_Mem_Write_IT(&hi2c1, EEPROM_ADDR, 0x08, I2C_MEMADD_SIZE_16BIT,&IOExpdrDataReadBack, 1);
 			HAL_Delay(100);
 
 			//read EEPROM and write data to led
-			HAL_I2C_Mem_Read_IT(&hi2c1, EEPROM_ADDR, 0x2c, I2C_MEMADD_SIZE_16BIT,&IOExpdrDataWrite, 1);
+			HAL_I2C_Mem_Read_IT(&hi2c1, EEPROM_ADDR, 0x08, I2C_MEMADD_SIZE_16BIT,&IOExpdrDataWrite, 1);
 			HAL_Delay(100);
 			HAL_I2C_Mem_Write_IT(&hi2c1, IOEXPD_ADDR, 0x15, I2C_MEMADD_SIZE_8BIT,&IOExpdrDataWrite, 1);
 
